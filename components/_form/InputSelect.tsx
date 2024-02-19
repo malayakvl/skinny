@@ -10,7 +10,7 @@ interface PropsSelect {
 
 const InputSelect: React.FC<PropsSelect> = ({ style, name, label, options, props }) => {
     return (
-        <div className={`mb-4 ${style} relative`}>
+        <div className={`mb-0 ${style} relative`}>
             {label && (
                 <label className="control-label" htmlFor={name}>
                     {label}

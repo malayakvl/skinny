@@ -16,3 +16,7 @@ export const getAddressDataSelector = createSelector(
     rootSelector,
     (layouts: State.Layouts): any => layouts.address
 );
+export const getPaymentDataSelector = createSelector(
+    rootSelector,
+    (layouts: State.Layouts): any => layouts.payment
+);

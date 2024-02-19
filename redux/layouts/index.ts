@@ -3,7 +3,6 @@ import {
     setActiveLayoutAction,
     setAddressDataAction
 } from './actions';
-// import { showPopupAction } from '../dashboard';
 
 
 const initialState: State.Layouts = {
@@ -13,9 +12,24 @@ const initialState: State.Layouts = {
         last_name: '',
         post_code: '',
         address: '', city:'',
-        country_id: '',
+        country: '',
         phone: '',
-        state_id: ''
+        state: ''
+    },
+    payment: {
+        zip_code: '',
+        card_number: '',
+        card_name: '',
+        card_exp: '',
+        paymentAddress: {
+            last_name: '',
+            post_code: '',
+            address: '',
+            city:'',
+            country: '',
+            phone: '',
+            state: ''
+        }
     }
 };
 

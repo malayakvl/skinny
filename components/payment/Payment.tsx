@@ -1,33 +1,39 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { InputText } from '../_form';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import countriesData from "@/components/_data/countries.json";
 import {setActiveLayoutAction} from "@/redux/layouts";
 import { useDispatch, useSelector } from 'react-redux';
+import statesData from "@/components/_data/states.json";
+import {getAddressDataSelector} from "@/redux/layouts/selectors";
 
 function Payment() {
     const dispatch = useDispatch();
+    const paymentData = useSelector(getAddressDataSelector);
+    // const [selectedCountry, setSelectedCountry] = useState(paymentData['country']);
+    // const [selectedState, setSelectedState] = useState(paymentData['state']);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
+    const [sameAddress, setSameAddress] = useState(true);
 
-    const SubmitSchema = Yup.object().shape({
-        // last_name: Yup.string().required(('Required field')),
-        // country_id: Yup.string().required(('Required field')),
-        // post_code: Yup.string().required(('Required field')),
-        email: Yup.string().required(('Required field')),
-        // city: Yup.string().required(('Required field')),
-        // address: Yup.string().required(('Required field'))
-    });
+    let SubmitSchema;
+    if (!sameAddress) {
+        SubmitSchema = Yup.object().shape({
+            zip_code: Yup.string().required(('Required field')),
+            card_number: Yup.string().required(('Required field')),
+            card_name: Yup.string().required(('Required field')),
+            card_exp: Yup.string().required(('Required field')),
+            last_name: Yup.string().required(('Required field')),
+            post_code: Yup.string().required(('Required field')),
+            email: Yup.string().required(('Required field')),
+            city: Yup.string().required(('Required field')),
+            address: Yup.string().required(('Required field'))
+        });
+    } else {
 
-    const validateEmail = (email: string) => {
-        if (!email) {
-            return false;
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-            return false;
-        }
-
-        return true;
-    };
+    }
 
     return (
         <Formik
@@ -36,6 +42,7 @@ function Payment() {
             validationSchema={SubmitSchema}
             onSubmit={(values) => {
                 dispatch(setActiveLayoutAction('payment'));
+                console.log(values)
             }}>
             {(props) => (
                 <form onSubmit={props.handleSubmit}>
@@ -43,12 +50,22 @@ function Payment() {
                         <div className="payment-top w-100 d-block">
                             <ul>
                                 <li className="d-flex w-100 flex-wrap justify-content-between"><span
-                                    className="left-text">Contact</span> <span><a href="#">Change</a></span></li>
+                                    className="left-text">Contact</span>
+                                    <span onClick={() => dispatch(setActiveLayoutAction('address'))}
+                                          className="fake-link">
+                                        Change
+                                    </span>
+                                </li>
                                 <li className="d-flex w-100 flex-wrap justify-content-between"><span
-                                    className="left-text">Ship to</span> <span><a href="#">Change</a></span></li>
+                                    className="left-text">Ship to</span>
+                                    <span onClick={() => dispatch(setActiveLayoutAction('address'))} className="fake-link">
+                                        Change
+                                    </span>
+                                </li>
                                 <li className="d-flex w-100 flex-wrap justify-content-between"><span
                                     className="left-text">Shipping method</span> <span>Standard</span> <span><a
-                                    href="#">Change</a></span></li>
+                                    href="#">Change</a></span>
+                                </li>
                             </ul>
                         </div>
                         <div className="payment-card-section w-100 d-block">
@@ -56,33 +73,63 @@ function Payment() {
                             <p> All transactions are secure and encrypted. </p>
                             <div className="payment-card-box w-100 d-block">
                                 <div className="payment-card-box-top w-100 d-flex flex-wrap justify-content-between">
-                                    <span>Credit card </span> <span><img src="images/card-logo.jpg" alt=""
-                                                                         className="img-fluid"/></span></div>
+                                    <span>Credit card </span>
+                                    <span>
+                                        <img src="/images/card-logo.jpg" alt="" className="img-fluid" />
+                                    </span>
+                                </div>
                                 <div className="payment-card-box-data w-100 d-block">
                                     <div className="row gx-3">
                                         <div className="col-12">
                                             <div className="form-group w-100 d-block">
-                                                <input type="text" id="card-number" placeholder="Card Number"
-                                                       className="form-control checkout"/>
+                                                <InputText
+                                                    name={'card_number'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Zip code'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-12">
                                             <div className="form-group w-100 d-block">
-                                                <input type="text" id="name" placeholder="Name on card"
-                                                       className="form-control checkout"/>
+                                                <InputText
+                                                    name={'card_name'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Name on card'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group w-100 d-block">
-                                                <input type="text" id="expiration"
-                                                       placeholder="Expiration date (MM / YY)"
-                                                       className="form-control checkout"/>
+                                                <InputText
+                                                    name={'card_exp'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Expiration date (MM / YY)'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group w-100 d-block">
-                                                <input type="text" id="Security-code" placeholder="Security code"
-                                                       className="form-control checkout"/>
+                                                <InputText
+                                                    name={'card_exp'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Security code'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -95,73 +142,137 @@ function Payment() {
                             <div className="radio-button-row w-100 d-block">
                                 <label className="control control-radio">
                                     Same as shipping address
-                                    <input type="radio" name="billing-address" />
+                                    <input type="radio" name="billing-address" checked={sameAddress} onClick={() => setSameAddress(true)} />
                                     <div className="control-indicator"></div>
                                 </label>
                                 <label className="control control-radio">
                                     Use a different billing address
-                                    <input type="radio" name="billing-address" id="address-change"/>
+                                    <input type="radio" name="billing-address" checked={!sameAddress} value="change" onClick={() => setSameAddress(false)} />
                                     <div className="control-indicator"></div>
                                 </label>
                             </div>
-                            <div className="billing-address-form w-100 d-none">
+                            <div className={`billing-address-form w-100 ${sameAddress ? 'd-none' : ''}`}>
                                 <div className="checkout-form w-100 d-block">
                                     <div className="row gx-3">
                                         <div className="col-12">
                                             <div className="form-group">
-                                                <select id="country" className="form-select checkout">
-                                                    <option data-code="US" data-pure-numeric-postal-code="false"
-                                                            value="United States"> United States
-                                                    </option>
-                                                </select>
+                                                <Select
+                                                    className={'form-control-dropdown'}
+                                                    classNamePrefix={'inventory'}
+                                                    onChange={(value: any) => {
+                                                        setSelectedCountry(value)
+                                                    }}
+                                                    placeholder={('Country')}
+                                                    name="country_id"
+                                                    value={selectedCountry}
+                                                    options={countriesData}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="text" id="first-name" className="form-control checkout"
-                                                       placeholder="First name (optional)"/>
+                                                <InputText
+                                                    name={'first_name'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'First name (optional)'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-group">
-                                                <input type="text" id="last-name" className="form-control checkout"
-                                                       placeholder="Last name"/>
+                                                <InputText
+                                                    name={'last_name'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Last name'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
                                             <div className="form-group">
-                                                <input type="text" id="address" className="form-control checkout"
-                                                       placeholder="Address"/>
+                                                <InputText
+                                                    name={'address'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Address'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-12">
                                             <div className="form-group">
-                                                <input type="text" id="apartment" className="form-control checkout"
-                                                       placeholder="Apartment, suite, etc. (optional)"/>
+                                                <InputText
+                                                    name={'appartment'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Apartment, suite, etc. (optional)'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
-                                                <input type="text" id="city" className="form-control checkout"
-                                                       placeholder="City"/>
+                                                <InputText
+                                                    name={'city'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'City'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
-                                                <select id="state" className="form-select checkout">
-                                                </select>
+                                                <Select
+                                                    className={'form-control-dropdown'}
+                                                    classNamePrefix={'inventory'}
+                                                    onChange={(value: any) => {
+                                                        setSelectedState(value)
+                                                    }}
+                                                    placeholder={('State')}
+                                                    name="state_id"
+                                                    value={selectedState}
+                                                    options={statesData}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
-                                                <input type="text" id="zipCode	" className="form-control checkout"
-                                                       placeholder="Zip code"/>
+                                                <InputText
+                                                    name={'post_code'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Zip code'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-12">
                                             <div className="form-group">
-                                                <input type="tel" id="phone" className="form-control checkout"
-                                                       placeholder="Phone"/>
+                                                <InputText
+                                                    name={'phone'}
+                                                    label={null}
+                                                    icon={null}
+                                                    placeholder={'Phone'}
+                                                    style={null}
+                                                    props={props}
+                                                    tips={null}
+                                                />
                                             </div>
                                         </div>
                                     </div>

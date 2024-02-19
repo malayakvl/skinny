@@ -2,6 +2,7 @@ declare namespace Layouts {
     interface Root {
         activeLayout: string;
         address: object;
+        payment: object;
     }
 
     interface Toast {

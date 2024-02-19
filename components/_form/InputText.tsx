@@ -33,7 +33,7 @@ const InputText: React.FC<Props> = ({
     };
 
     return (
-        <div className={`mb-4 ${style}`}>
+        <div className={`mb-0 ${style}`}>
             {label && (
                 <label className="control-label" htmlFor={name}>
                     {label}

@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { InputText } from '../_form';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import countriesData from "@/components/_data/countries.json";
 import statesData from "@/components/_data/states.json";
@@ -11,28 +11,27 @@ import {getAddressDataSelector} from "@/redux/layouts/selectors";
 
 function Address() {
     const dispatch = useDispatch();
-    const [selectedCountry, setSelectedCountry] = useState(null);
-    const [selectedState, setSelectedState] = useState(null);
     const addressData = useSelector(getAddressDataSelector);
+    const [selectedCountry, setSelectedCountry] = useState(addressData['country']);
+    const [selectedState, setSelectedState] = useState(addressData['state']);
 
     const SubmitSchema = Yup.object().shape({
         last_name: Yup.string().required(('Required field')),
-        country_id: Yup.string().required(('Required field')),
         post_code: Yup.string().required(('Required field')),
         email: Yup.string().required(('Required field')),
         city: Yup.string().required(('Required field')),
         address: Yup.string().required(('Required field'))
     });
 
-    const validateEmail = (email: string) => {
-        if (!email) {
-            return false;
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-            return false;
-        }
-
-        return true;
-    };
+    // const validateEmail = (email: string) => {
+    //     if (!email) {
+    //         return false;
+    //     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // };
 
     return (
         <Formik
@@ -40,8 +39,10 @@ function Address() {
             initialValues={addressData}
             validationSchema={SubmitSchema}
             onSubmit={(values) => {
-                console.log(values)
-                dispatch(setAddressDataAction(values))
+                const data = values
+                data['country'] = selectedCountry;
+                data['state'] = selectedState;
+                dispatch(setAddressDataAction(data))
                 dispatch(setActiveLayoutAction('payment'));
             }}>
             {(props) => (
@@ -70,7 +71,7 @@ function Address() {
                             <div className="checkout-title flex-auto">Shipping address</div>
                             <div className="checkout-form w-100 d-block">
                                 <div className="row gx-3">
-                                    <div className="col-12 mb-4">
+                                    <div className="col-12">
                                         <div className="form-group">
                                             <Select
                                                 className={'form-control-dropdown'}
