@@ -1,6 +1,7 @@
 declare namespace Layouts {
     interface Root {
         activeLayout: string;
+        address: object;
     }
 
     interface Toast {

@@ -21,7 +21,7 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page) => page);
     const Layout = (Component as any).Layout || MainLayout;
-console.log(Component)
+
     return getLayout(
         <>
             <ReduxProvider store={store}>

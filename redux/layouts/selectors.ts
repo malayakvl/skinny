@@ -12,3 +12,7 @@ export const getActiveLayoutSelector = createSelector(
     rootSelector,
     (layouts: State.Layouts): string => layouts.activeLayout
 );
+export const getAddressDataSelector = createSelector(
+    rootSelector,
+    (layouts: State.Layouts): any => layouts.address
+);

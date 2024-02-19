@@ -4,19 +4,24 @@ import { InputText } from '../_form';
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import countriesData from "@/components/_data/countries.json";
-import {setActiveLayoutAction} from "@/redux/layouts";
+import statesData from "@/components/_data/states.json";
+import {setActiveLayoutAction, setAddressDataAction} from "@/redux/layouts";
 import { useDispatch, useSelector } from 'react-redux';
+import {getAddressDataSelector} from "@/redux/layouts/selectors";
 
 function Address() {
     const dispatch = useDispatch();
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [selectedState, setSelectedState] = useState(null);
+    const addressData = useSelector(getAddressDataSelector);
 
     const SubmitSchema = Yup.object().shape({
-        // last_name: Yup.string().required(('Required field')),
-        // country_id: Yup.string().required(('Required field')),
-        // post_code: Yup.string().required(('Required field')),
+        last_name: Yup.string().required(('Required field')),
+        country_id: Yup.string().required(('Required field')),
+        post_code: Yup.string().required(('Required field')),
         email: Yup.string().required(('Required field')),
-        // city: Yup.string().required(('Required field')),
-        // address: Yup.string().required(('Required field'))
+        city: Yup.string().required(('Required field')),
+        address: Yup.string().required(('Required field'))
     });
 
     const validateEmail = (email: string) => {
@@ -32,10 +37,11 @@ function Address() {
     return (
         <Formik
             enableReinitialize
-            initialValues={{email: '1@1.com'}}
+            initialValues={addressData}
             validationSchema={SubmitSchema}
             onSubmit={(values) => {
                 console.log(values)
+                dispatch(setAddressDataAction(values))
                 dispatch(setActiveLayoutAction('payment'));
             }}>
             {(props) => (
@@ -70,11 +76,11 @@ function Address() {
                                                 className={'form-control-dropdown'}
                                                 classNamePrefix={'inventory'}
                                                 onChange={(value: any) => {
-                                                    console.log(1);
+                                                    setSelectedCountry(value)
                                                 }}
                                                 placeholder={('Country')}
                                                 name="country_id"
-                                                value={null}
+                                                value={selectedCountry}
                                                 options={countriesData}
                                             />
                                         </div>
@@ -146,15 +152,23 @@ function Address() {
                                     </div>
                                     <div className="col-md-4">
                                         <div className="form-group">
-                                            <select id="state" className="form-select checkout">
-                                                <option>State</option>
-                                            </select>
+                                            <Select
+                                                className={'form-control-dropdown'}
+                                                classNamePrefix={'inventory'}
+                                                onChange={(value: any) => {
+                                                    setSelectedState(value)
+                                                }}
+                                                placeholder={('State')}
+                                                name="state_id"
+                                                value={selectedState}
+                                                options={statesData}
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className="form-group">
                                             <InputText
-                                                name={'zip_code'}
+                                                name={'post_code'}
                                                 label={null}
                                                 icon={null}
                                                 placeholder={'Zip code'}
